@@ -1,0 +1,33 @@
+{
+  "name": "api-switch",
+  "version": "0.1.0",
+  "description": "Switch 3rd-party API settings for 'Claude Code' and 'Codex CLI'.",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "bin": {
+    "api-switch": "./dist/bin/api-switch.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "node ./scripts/build.js",
+    "prepack": "npm run build",
+    "start": "node ./dist/bin/api-switch.js",
+    "dev": "node ./bin/api-switch.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "claude",
+    "anthropic",
+    "codex",
+    "cli"
+  ]
+}

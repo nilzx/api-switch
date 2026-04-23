@@ -1,0 +1,6 @@
+.git/
+.gitignore
+src/
+test/
+scripts/
+.DS_Store
