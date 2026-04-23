@@ -1,6 +1,6 @@
 {
   "name": "api-switch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Switch 3rd-party API settings for 'Claude Code' and 'Codex CLI'.",
   "license": "MIT",
   "type": "commonjs",

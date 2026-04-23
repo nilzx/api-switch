@@ -128,6 +128,103 @@ test("loadConfig resolves nested target config paths", async () => {
   assert.equal(config.codex.providers[0].name, "inline-codex");
 });
 
+test("loadConfig expands current-user home prefixes and preserves other path forms", async () => {
+  const configDirectory = await fs.mkdtemp(path.join(os.tmpdir(), "api-switch-config-paths-"));
+  const injectedHomeDirectory = path.join(configDirectory, "fake-home");
+  const absoluteClaudePath = path.join(configDirectory, "absolute-claude");
+  const configPath = path.join(configDirectory, "config.toml");
+
+  await fs.writeFile(
+    configPath,
+    [
+      "[claude]",
+      `load_path = "${absoluteClaudePath.replace(/\\/g, "\\\\")}"`,
+      "",
+      "[[claude.providers]]",
+      'name = "inline-claude"',
+      'key = "claude-key"',
+      'url = "claude-url"',
+      "",
+      "[codex]",
+      'load_path = "~"',
+      "",
+      "[[codex.providers]]",
+      'name = "inline-codex"',
+      'key = "codex-key"',
+      'url = "codex-url"',
+      ""
+    ].join("\n"),
+    "utf8"
+  );
+
+  let config = await loadConfig(configPath, {
+    homeDirectory: injectedHomeDirectory
+  });
+
+  assert.equal(config.claude.loadPath, absoluteClaudePath);
+  assert.equal(config.codex.loadPath, injectedHomeDirectory);
+
+  await fs.writeFile(
+    configPath,
+    [
+      "[claude]",
+      'load_path = "./claude-providers"',
+      "",
+      "[[claude.providers]]",
+      'name = "inline-claude"',
+      'key = "claude-key"',
+      'url = "claude-url"',
+      "",
+      "[codex]",
+      'load_path = "~/codex-providers"',
+      "",
+      "[[codex.providers]]",
+      'name = "inline-codex"',
+      'key = "codex-key"',
+      'url = "codex-url"',
+      ""
+    ].join("\n"),
+    "utf8"
+  );
+
+  config = await loadConfig(configPath, {
+    homeDirectory: injectedHomeDirectory
+  });
+
+  assert.equal(config.claude.loadPath, path.join(configDirectory, "claude-providers"));
+  assert.equal(config.codex.loadPath, path.join(injectedHomeDirectory, "codex-providers"));
+
+  await fs.writeFile(
+    configPath,
+    [
+      "[claude]",
+      'load_path = "~\\\\claude-providers"',
+      "",
+      "[[claude.providers]]",
+      'name = "inline-claude"',
+      'key = "claude-key"',
+      'url = "claude-url"',
+      "",
+      "[codex]",
+      'load_path = "~otheruser/providers"',
+      "",
+      "[[codex.providers]]",
+      'name = "inline-codex"',
+      'key = "codex-key"',
+      'url = "codex-url"',
+      ""
+    ].join("\n"),
+    "utf8"
+  );
+
+  config = await loadConfig(configPath, {
+    homeDirectory: injectedHomeDirectory
+  });
+
+  assert.equal(config.claude.loadPath, path.join(injectedHomeDirectory, "claude-providers"));
+  assert.equal(config.codex.loadPath, path.join(configDirectory, "~otheruser/providers"));
+});
+
 test("toml-edit upserts and removes targeted assignments while keeping unrelated content", () => {
   let content = [
     'theme = "dark"',
