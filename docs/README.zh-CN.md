@@ -16,7 +16,7 @@
 全局安装：
 
 ```bash
-npm install -g @nilzx/api-switch
+npm install -g api-switch
 ```
 
 ## 使用方式
