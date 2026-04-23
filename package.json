@@ -6,7 +6,7 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "bin": {
-    "api-switch": "./dist/bin/api-switch.js"
+    "api-switch": "dist/bin/api-switch.js"
   },
   "exports": {
     ".": "./dist/index.js"
