@@ -2,7 +2,7 @@
 
 A minimal CLI for switching Claude Code and Codex CLI between third-party API access and official login.
 
-[中文文档](./docs/README.zh-CN.md)
+[中文文档](./README.zh-CN.md)
 
 ## Requirements
 
